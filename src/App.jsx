@@ -18,7 +18,7 @@ function App() {
   return (
     <>
       <main className='font-raleway relative'>
-        <Menu show={menu}/>
+        <Menu show={menu} toggleShow={showMenu}/>
         <NavBar showMenu={showMenu} showCart={showCart}></NavBar>
       </main>
     </>

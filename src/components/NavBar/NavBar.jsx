@@ -5,7 +5,7 @@ import logo from "@/assets/images/logo.svg";
 function NavBar({showMenu, showCart}) {
   return (
   <>
-    <nav className='flex lg:hidden justify-between items-center w-full h-14 fixed px-10 py-5 shadow-[0_6px_10px_4px_rgba(0,0,0,0.05)]'>
+    <nav className='z-10 flex lg:hidden justify-between items-center w-full h-14 fixed px-10 py-5 shadow-[0_6px_10px_4px_rgba(0,0,0,0.05)]'>
       <CiMenuBurger className='w-6 h-6' onClick={showMenu}/>
       <div>
         <img src={logo} alt="ScandiMarket Logo"  width={40} height={40} />
