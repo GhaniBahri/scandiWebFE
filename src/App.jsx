@@ -1,26 +1,26 @@
-// import { useState } from 'react'
-// import './App.css'
-import { useAppcontext } from './store/state'
+
+import React, {useState} from 'react'
+// import { useAppcontext } from './store/state'
+import NavBar from './components/NavBar/NavBar'
+import Menu from './components/NavBar/Menu'
 
 function App() {
-  const {count, setCount} = useAppcontext()
+  // const {count, setCount} = useAppcontext()
+  const [menu, setMenu] = useState(false)
+  const [cart, setCart] = useState(false)
+
+  function showMenu(){
+    setMenu (!menu)
+  }
+  function showCart(){
+    setCart(!cart)
+  }
   return (
     <>
-      <div className='bg-white dark:bg-black font-raleway'>
-        
-      </div>
-      <h1 className='font-bold text-5xl font-raleway '>Vite + React</h1>
-      <div className="card  font-raleway">
-        <button onClick={() => setCount((count) => count + 5)}>
-          count is {count}
-        </button>
-        <p>
-          Women <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <main className='font-raleway relative'>
+        <Menu show={menu}/>
+        <NavBar showMenu={showMenu} showCart={showCart}></NavBar>
+      </main>
     </>
   )
 }
