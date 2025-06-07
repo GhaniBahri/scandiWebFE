@@ -19,7 +19,7 @@ function CartMenu({cart, showCart}) {
         </div>
         </aside>
       </div>
-      <div className='top-0 right-0 left-0 bottom-0 hidden lg:block'>
+      <div className='top-0 right-0 left-0 bottom-0 hidden lg:block z-40'>
         <div className='-z-50 fixed top-0 right-0 left-0 bottom-0 bg-[rgba(0,0,0,0.4)]' onClick={showCart}></div>
         <aside className={`z-10 absolute top-20 right-8 bg-white w-72 transition-all duration-500 ease-in-out ${mounted ? 'h-[32rem]' : 'h-0'}`}>
     
