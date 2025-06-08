@@ -6,7 +6,7 @@ import App from './App.jsx'
 // import { client } from './store/ApolloClient.js'
 import { BrowserRouter, Routes, Route } from 'react-router'
 import Category from './pages/Category.jsx'
-import Cart from './pages/Cart.jsx'
+import ProductDetails from './pages/productDetails.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -16,6 +16,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/" element={<App />} >
             {/* <Route index element={<Category/>} /> */}
             <Route path="categories/:cat" element={<Category />} />
+            <Route path="products/:product" element={<ProductDetails />} />
           </Route>
         </Routes>
       </StrictMode>
