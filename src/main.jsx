@@ -7,6 +7,7 @@ import App from './App.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router'
 import Category from './pages/Category.jsx'
 import ProductDetails from './pages/productDetails.jsx'
+import ErrorPage from './components/ErrorPage.jsx';
 
 const client = new ApolloClient({
   uri: 'http://localhost:8000/graphql',
@@ -23,6 +24,7 @@ createRoot(document.getElementById('root')).render(
               {/* <Route index element={<Category/>} /> */}
               <Route path="categories/:cat" element={<Category />} />
               <Route path="products/:product" element={<ProductDetails />} />
+              <Route path="*" element={<ErrorPage/>} />
             </Route>
           </Routes>
         </StrictMode>
