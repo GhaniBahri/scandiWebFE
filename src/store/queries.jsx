@@ -8,12 +8,14 @@ export const GET_PRODUCTS = gql`
       inStock
       gallery
       description
-      category
+      category{
+        name
+      }
       attributes {
         id
         name
         type
-        items {
+        options {
           id
           displayValue
           value
@@ -32,19 +34,21 @@ export const GET_PRODUCTS = gql`
 `;
 
 export const GET_PRODUCT_BY_ID = gql`
-  query GetProductById($id: String!) {
+  query GetProductById($id: ID!) {
     product(id: $id) {
       id
       name
       inStock
       gallery
       description
-      category
+      category {
+        name
+      }
       attributes {
         id
         name
         type
-        items {
+        options {
           id
           displayValue
           value
@@ -68,8 +72,19 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
       id
       name
       inStock
+      gallery
       description
-      category
+      category{
+        name
+      }
+      prices{
+        amount
+        formatted
+        currency{ 
+          label 
+          symbol 
+        }
+      }
       brand
     }
   }
