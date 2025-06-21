@@ -3,7 +3,7 @@ import { useParams } from 'react-router'
 import { useAppcontext } from '../store/state'
 import { CiSquareChevRight, CiSquareChevLeft } from "react-icons/ci"
 import ErrorPage from '../components/ErrorPage'
-import stripTags from '../helpers/stripTags'
+import parse from 'html-react-parser'
 
 function ProductDetails() {
     const {product} = useParams()
@@ -36,17 +36,19 @@ function ProductDetails() {
             </div>
         </section>)
     }
+
     if (loading) return <Loading/>
-    if (error) return <ErrorPage/>
-    const productData = data?.product || {}
-    console.log('productData', productData)
+    if (error) return <ErrorPage error={error} />
+
+    const productData = data?.product
+    if (!productData) return <ErrorPage/>
     const imagesArray = productData?.gallery 
     const attributes = {}
     productData?.attributes.forEach(attr => (attributes[attr.id] = attr))
-    // productData?.attributes.forEach(attr => (attributes[attr.id] = attr))
     const attributeKeys = productData.attributes.map(attr => attr.id) 
     const otherAttributes = attributeKeys.filter(attr => !['Color', 'Capacity', 'Size'].includes(attr))
-    console.log('other', otherAttributes)
+    const productDescription = parse(replaceNewLine(productData.description))
+
     function selectPic (id){
         setPicId(id)
     }
@@ -64,6 +66,12 @@ function ProductDetails() {
             setPicId (picId - 1)
         }
     }
+    function addCartItem(){
+        console.log('item added')
+    }
+    function replaceNewLine(str){
+        return str.replace(/\\n/g, '<br/>')
+    }
 
   return (
     <section className='w-full h-fit flex flex-col lg:flex-row px-20 py-10 font-raleway'>
@@ -71,15 +79,18 @@ function ProductDetails() {
             {(imagesArray.length > 1) && (<ul className='gap-4 w-full lg:w-1/5 max-h-[32rem] flex flex-row justify-center items-center lg:flex-col px-3 overflow-x-auto lg:overflow-y-auto'>
                 {imagesArray.map((pic, id) => (<img src={pic} key={id} width={60} height={60} className={`aspect-square min-w-14 min-h-14 max-w-20 max-h-20 lg:w-4/5 rounded-xs object-fill ${picId == id ? 'scale-90 border-4 p-1 border-primary inset-shadow-[0_0_8px_4px_rgba(255,255,255,0.5)]' :''}`} onClick={()=>selectPic(id)} />)) }
             </ul>)}
-            <div className='max-w-4/5 p-2 group relative mx-auto'>
+            <div className='w-4/5 max-w-xl p-2 group relative mx-auto'>
                 <img src={imagesArray[picId]} alt={productData.name} width={200} height={200} className='max-w-full rounded-xs w-[32rem] h-[32rem]'/>
-                <div className="w-full flex flex-row justify-between items-center opacity-0 absolute left-0 top-1/2 -translate-y-1/2 group-hover:opacity-100 transition-opacity duration-150 ease-out px-6">
+                {(imagesArray.length > 1) &&(<div className="w-full flex flex-row justify-between items-center opacity-0 absolute left-0 top-1/2 -translate-y-1/2 group-hover:opacity-100 transition-opacity duration-150 ease-out px-6">
                     <button className='w-10 h-10 rounded-xs overflow-hidden' onClick={prevPic}><CiSquareChevLeft className='w-full h-full bg-white text-gray-600' /></button>
                     <button className='w-10 h-10 rounded-xs overflow-hidden' onClick={nextPic}><CiSquareChevRight className='w-full h-full bg-white text-gray-600' /></button>
-                </div>
+                </div>)}
             </div>
         </div>
         <div className='w-full lg:max-w-96 md:max-w-[34rem] h-fit lg:w-2/5 flex flex-col gap-6 justify-start items-center p-6 pt-10 mx-auto lg:ml-20 text-primaryText'>
+            {!productData.inStock && (
+                <h2 className='w-full uppercase text-left text-lg font-semibold -mb-6'>Out Of Stock</h2>
+            )}
             <h1 className='w-full text-left text-5xl font-semibold mb-8'>{productData.name}</h1>
             {attributeKeys.includes('Size') && (
                 <div className='w-full flex flex-col gap-2'>
@@ -106,7 +117,7 @@ function ProductDetails() {
             </div>) : ''}
             {otherAttributes.length != 0 && (
                 otherAttributes.map(attr => (
-                    <div className='w-full flex flex-col gap-2'>
+                    <div className='w-full flex flex-col gap-2' key={attr}>
                         <h2 className='w-full uppercase text-left text-lg font-semibold'>{attributes[attr].name} :</h2>
                         <div className="flex flex-row justify-start items-center gap-1">
                             {attributes[attr].options.map(item => (<button key={item.id}  className='w-14 h-9 align-middle border-2 border-secondaryText p-1 text-primaryText text-center '>{item.displayValue}</button>))}
@@ -118,8 +129,8 @@ function ProductDetails() {
                 <h2 className='w-full uppercase text-left text-lg font-semibold'>Price :</h2>
                 <p className='w-full text-left text-xl font-semibold' >{productData.prices[0].currency.symbol+productData.prices[0].amount}</p>
             </div>
-            <button className='uppercase w-full h-16 text-white bg-primary text-center font-semibold text-xl rounded my-5'>add to cart</button>
-            <p className='w-full font-normal text-lg text-left leading-7'>{stripTags(productData.description)}</p>
+            <button className={`uppercase w-full h-16 text-white bg-primary text-center font-semibold text-xl rounded my-5 ${productData.inStock ? 'opacity-100 cursor-default' : 'opacity-60 cursor-not-allowed'}`} onClick={addCartItem} disabled={!productData.inStock}>add to cart</button>
+            <div className='w-full font-normal text-lg text-left leading-7' >{productDescription}</div>
         </div>
     </section>
   )

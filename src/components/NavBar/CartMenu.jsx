@@ -1,10 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 function CartMenu({cart, showCart}) {
   const [mounted, setMounted] = useState(false)
+  const menuRef = useRef(null)
+
   useEffect(()=>{
     setMounted(cart)
   }, [cart])
+  useEffect(() => {
+    function handleOutsideClick(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        showCart();
+      }
+    }
+    if (cart) {
+      document.addEventListener('mousedown', handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [cart, showCart]);
+
+  if (!cart) return null;
   return (
   cart && (
     <>
@@ -19,7 +36,7 @@ function CartMenu({cart, showCart}) {
         </div>
         </aside>
       </div>
-      <div className='top-0 right-0 left-0 bottom-0 hidden lg:block z-40'>
+      <div className='top-0 right-0 left-0 bottom-0 hidden lg:block z-40' ref={menuRef}>
         <div className='-z-50 fixed top-0 right-0 left-0 bottom-0 bg-[rgba(0,0,0,0.4)]' onClick={showCart}></div>
         <aside className={`z-10 absolute top-20 right-8 bg-white w-72 transition-all duration-500 ease-in-out ${mounted ? 'h-[32rem]' : 'h-0'}`}>
     

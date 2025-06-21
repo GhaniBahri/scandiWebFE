@@ -1,15 +1,15 @@
-import { Routes, Route } from "react-router";
 import Layout from './components/Layout'
-import { Outlet } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router";
+import { useEffect } from "react";
 
 function App() {
-  
-  
-  // console.table(products)
-  
- 
-
-
+  let navigate = useNavigate()
+  const location = useLocation()
+useEffect(()=>{
+  if (location.pathname === '/'){
+    navigate('/categories/all', {replace: true})
+  }
+}, [location.pathname, navigate])
   return (
     <>
       <Layout>

@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 import { AppWrapper } from './store/state.jsx'
 import './index.css'
 import App from './App.jsx'
-import { BrowserRouter, Routes, Route } from 'react-router'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
 import Category from './pages/Category.jsx'
 import ProductDetails from './pages/productDetails.jsx'
 import ErrorPage from './components/ErrorPage.jsx';
@@ -21,7 +21,7 @@ createRoot(document.getElementById('root')).render(
         <StrictMode>
         <Routes>
             <Route path="/" element={<App />} >
-              {/* <Route index element={<Category/>} /> */}
+              {/* <Route index element={<Navigate to="/categories/all" replace />} /> */}
               <Route path="categories/:cat" element={<Category />} />
               <Route path="products/:product" element={<ProductDetails />} />
               <Route path="*" element={<ErrorPage/>} />

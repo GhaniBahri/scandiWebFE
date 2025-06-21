@@ -1,7 +1,8 @@
 import { NavLink } from 'react-router'
 import errorImage from '../assets/images/errorImage.svg'
 
-function ErrorPage() {
+function ErrorPage({error}) {
+  console.error(error)
   return (
     <section className='w-full h-fit p-10 lg:px-48 flex flex-col-reverse lg:flex-row justify-center items-center'>
         <div className='max-w-3xl w:full lg:w-1/2 flex justify-center items-start flex-col gap-12'>
