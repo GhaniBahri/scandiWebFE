@@ -26,7 +26,9 @@ function NavBar({showMenu, showCart}) {
           )}
       </div>
       <div className='w-1/3 flex py-5 justify-center items-center'>
+        <NavLink to={'/'}>
           <img src={logo} alt="ScandiMarket Logo"  width={50} height={50} />
+        </NavLink>
       </div>
       <div className='w-1/3 flex justify-end items-center py-5'>
       <button onClick={showCart} data-testid='cart-btn' >

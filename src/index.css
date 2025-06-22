@@ -4,7 +4,8 @@
   --color-primary: #5ECE7B;
   --color-primaryText: #1D1F22;
   --color-secondaryText: #8D8F9A;
-  --color-lightGray: #E0E0E0
+  --color-lightGray: #E0E0E0;
+  --color-mutedRed: #E57373
 }
 ::-webkit-scrollbar{
   background: rgba(0, 0, 0, 0.1);

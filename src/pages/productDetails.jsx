@@ -10,6 +10,7 @@ function ProductDetails() {
     const {ProductById} = useAppcontext()
     const [picId, setPicId] = useState(0)
     const {loading, data, error} = ProductById(product)
+    const [selectedItem, setSelectedItem] = useState({})
 
     function Loading (){
         return (<section className='w-full h-fit p-10 flex justify-center items-center gap-20 flex-wrap animate-pulse'>
@@ -72,6 +73,10 @@ function ProductDetails() {
     function replaceNewLine(str){
         return str.replace(/\\n/g, '<br/>')
     }
+    function selectItemOption(opt, value){
+        setSelectedItem({...selectedItem,id:productData.id, [opt]:value})
+        console.log('order item', selectedItem)
+    }
 
   return (
     <section className='w-full h-fit flex flex-col lg:flex-row px-20 py-10 font-raleway'>
@@ -96,7 +101,11 @@ function ProductDetails() {
                 <div className='w-full flex flex-col gap-2'>
                     <h2 className='w-full uppercase text-left text-lg font-semibold'>Size :</h2>
                     <div className="flex flex-row justify-start items-center gap-1">
-                        {attributes.Size.options.map(size=>(<button key={size.id} className='w-14 h-9 align-middle border-2 border-secondaryText p-1 text-primaryText text-center text-sm font-bold'>{size.value}</button>))}
+                        {attributes.Size.options.map(size=>(
+                            <button key={size.id} className={`w-14 h-9 align-middle p-1 text-center text-sm font-bold rounded-xs ${selectedItem.size == size.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
+                            onClick={()=>{selectItemOption('size', size.value)}}>
+                                {size.value}
+                            </button>))}
                     </div>
                 </div>
             ) }
@@ -104,7 +113,11 @@ function ProductDetails() {
                 <div className='w-full flex flex-col gap-2'>
                     <h2 className='w-full uppercase text-left text-lg font-semibold'>Capacity :</h2>
                     <div className="flex flex-row justify-start items-center gap-1">
-                        {attributes.Capacity.options.map(capacity => (<button key={capacity.id} className='w-14 h-9 align-middle border-2 border-secondaryText p-1 text-primaryText text-center '>{capacity.displayValue}</button>))}
+                        {attributes.Capacity.options.map(capacity => (
+                            <button key={capacity.id} className={`w-14 h-9 align-middle p-1 text-primaryText text-center rounded-xs ${selectedItem.capacity == capacity.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
+                            onClick={()=>{selectItemOption('capacity', capacity.value)}}>
+                                {capacity.displayValue}
+                            </button>))}
                     </div>
                 </div>
             ) :''}
@@ -112,7 +125,11 @@ function ProductDetails() {
                 <div className='w-full flex flex-col gap-2'>
                 <h2 className='w-full uppercase text-left text-lg font-semibold'>Color :</h2>
                 <div className="flex flex-row justify-start items-center gap-1">
-                    {attributes.Color.options.map(color => (<button key={color.id} title={color.displayValue} className='w-6 h-6 border border-secondaryText' style={{backgroundColor: color.value}}></button>))}
+                    {attributes.Color.options.map(color => (
+                        <button key={color.id} title={color.displayValue} className={`w-7 h-7 rounded-[1px] ${selectedItem.color == color.value? 'border-4 border-white shadow-[0_0_0_3px_#5ECE7B] scale-85' : ' border border-secondaryText '}`} style={{backgroundColor: color.value}}
+                        onClick={()=>{selectItemOption('color', color.value)}}>
+
+                        </button>))}
                 </div>
             </div>) : ''}
             {otherAttributes.length != 0 && (
@@ -120,7 +137,8 @@ function ProductDetails() {
                     <div className='w-full flex flex-col gap-2' key={attr}>
                         <h2 className='w-full uppercase text-left text-lg font-semibold'>{attributes[attr].name} :</h2>
                         <div className="flex flex-row justify-start items-center gap-1">
-                            {attributes[attr].options.map(item => (<button key={item.id}  className='w-14 h-9 align-middle border-2 border-secondaryText p-1 text-primaryText text-center '>{item.displayValue}</button>))}
+                            {attributes[attr].options.map(item => (<button key={item.id}  className='w-14 h-9 align-middle border-2 border-secondaryText p-1 text-primaryText text-center '
+                                onClick={()=>{selectItemOption(attr, item.value)}}>{item.displayValue}</button>))}
                         </div>
                     </div>
                 ))
@@ -129,7 +147,11 @@ function ProductDetails() {
                 <h2 className='w-full uppercase text-left text-lg font-semibold'>Price :</h2>
                 <p className='w-full text-left text-xl font-semibold' >{productData.prices[0].currency.symbol+productData.prices[0].amount}</p>
             </div>
-            <button className={`uppercase w-full h-16 text-white bg-primary text-center font-semibold text-xl rounded my-5 ${productData.inStock ? 'opacity-100 cursor-default' : 'opacity-60 cursor-not-allowed'}`} onClick={addCartItem} disabled={!productData.inStock}>add to cart</button>
+            {productData.inStock ? 
+                (<button className={`uppercase w-full h-16 text-white bg-primary text-center font-semibold text-xl rounded my-5 ${selectedItem.id? 'opacity-100 cursor-default' : 'opacity-75 cursor-not-allowed'}`} onClick={addCartItem} disabled={!selectedItem.id}>add to cart</button>)
+                    : 
+                (<span  className='uppercase w-full h-16 text-white bg-mutedRed text-center font-semibold text-xl rounded my-5 flex justify-center items-center cursor-not-allowed ' >Out of stock</span>)
+                }
             <div className='w-full font-normal text-lg text-left leading-7' >{productDescription}</div>
         </div>
     </section>

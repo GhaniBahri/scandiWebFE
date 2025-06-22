@@ -6,6 +6,8 @@ const AppContext = createContext()
 export function AppWrapper ({children}) {
     const [menu, setMenu] = useState(false)
     const [cart, setCart] = useState(false)
+    const [selectedItem, setSelectedItem] = useState({})
+    const [cartItems, setCartItems] = useState([])
     const { AllProducts, ProductsByCategory, ProductById } = useStoreData()
 
     function showMenu(){
@@ -23,7 +25,9 @@ export function AppWrapper ({children}) {
                 cart, showCart,
                 AllProducts,
                 ProductsByCategory,
-                ProductById
+                ProductById,
+                selectedItem, setSelectedItem,
+                cartItems, setCartItems
             }}
         >
             {children}
