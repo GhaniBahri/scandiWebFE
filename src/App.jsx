@@ -7,7 +7,7 @@ function App() {
   const location = useLocation()
 useEffect(()=>{
   if (location.pathname === '/'){
-    navigate('/categories/all', {replace: true})
+    navigate('/categories/all') /* , {replace: true} */
   }
 }, [location.pathname, navigate])
   return (

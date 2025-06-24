@@ -1,16 +1,32 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { useAppcontext } from '../store/state'
 import { CiSquareChevRight, CiSquareChevLeft } from "react-icons/ci"
 import ErrorPage from '../components/ErrorPage'
 import parse from 'html-react-parser'
+import { useNavigate } from 'react-router'
 
 function ProductDetails() {
     const {product} = useParams()
-    const {ProductById} = useAppcontext()
+    const {ProductById, addCartItem} = useAppcontext()
     const [picId, setPicId] = useState(0)
     const {loading, data, error} = ProductById(product)
     const [selectedItem, setSelectedItem] = useState({})
+    const navigate = useNavigate()
+    
+    useEffect(()=>{
+        if(!loading && data?.product){
+            const prod = data.product
+            const defaultAttributes ={}
+             prod.attributes.forEach(attr =>  defaultAttributes[attr.id] = attr.options[0].value )
+            setSelectedItem({
+                id: prod.id,
+                quantity: 1,
+                price: prod.prices[0].amount,
+                attributes: defaultAttributes
+            })
+        }
+    }, [loading, data])
 
     function Loading (){
         return (<section className='w-full h-fit p-10 flex justify-center items-center gap-20 flex-wrap animate-pulse'>
@@ -49,6 +65,7 @@ function ProductDetails() {
     const attributeKeys = productData.attributes.map(attr => attr.id) 
     const otherAttributes = attributeKeys.filter(attr => !['Color', 'Capacity', 'Size'].includes(attr))
     const productDescription = parse(replaceNewLine(productData.description))
+    // console.log('product', productData, selectedItem)
 
     function selectPic (id){
         setPicId(id)
@@ -67,14 +84,16 @@ function ProductDetails() {
             setPicId (picId - 1)
         }
     }
-    function addCartItem(){
-        console.log('item added')
+    function redirectToCart(){
+        navigate('/cart')
     }
     function replaceNewLine(str){
         return str.replace(/\\n/g, '<br/>')
     }
     function selectItemOption(opt, value){
-        setSelectedItem({...selectedItem,id:productData.id, [opt]:value})
+        const attributes = selectedItem.attributes
+        attributes[opt] = value
+        setSelectedItem({...selectedItem, attributes: attributes} )
         console.log('order item', selectedItem)
     }
 
@@ -102,8 +121,8 @@ function ProductDetails() {
                     <h2 className='w-full uppercase text-left text-lg font-semibold'>Size :</h2>
                     <div className="flex flex-row justify-start items-center gap-1">
                         {attributes.Size.options.map(size=>(
-                            <button key={size.id} className={`w-14 h-9 align-middle p-1 text-center text-sm font-bold rounded-xs ${selectedItem.size == size.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
-                            onClick={()=>{selectItemOption('size', size.value)}}>
+                            <button key={size.id} className={`w-14 h-9 align-middle p-1 text-center text-sm font-bold rounded-xs ${selectedItem.attributes?.Size == size.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
+                            onClick={()=>{selectItemOption('Size', size.value)}}>
                                 {size.value}
                             </button>))}
                     </div>
@@ -114,8 +133,8 @@ function ProductDetails() {
                     <h2 className='w-full uppercase text-left text-lg font-semibold'>Capacity :</h2>
                     <div className="flex flex-row justify-start items-center gap-1">
                         {attributes.Capacity.options.map(capacity => (
-                            <button key={capacity.id} className={`w-14 h-9 align-middle p-1 text-primaryText text-center rounded-xs ${selectedItem.capacity == capacity.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
-                            onClick={()=>{selectItemOption('capacity', capacity.value)}}>
+                            <button key={capacity.id} className={`w-14 h-9 align-middle p-1 text-primaryText text-center rounded-xs ${selectedItem.attributes?.Capacity == capacity.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
+                            onClick={()=>{selectItemOption('Capacity', capacity.value)}}>
                                 {capacity.displayValue}
                             </button>))}
                     </div>
@@ -126,8 +145,8 @@ function ProductDetails() {
                 <h2 className='w-full uppercase text-left text-lg font-semibold'>Color :</h2>
                 <div className="flex flex-row justify-start items-center gap-1">
                     {attributes.Color.options.map(color => (
-                        <button key={color.id} title={color.displayValue} className={`w-7 h-7 rounded-[1px] ${selectedItem.color == color.value? 'border-4 border-white shadow-[0_0_0_3px_#5ECE7B] scale-85' : ' border border-secondaryText '}`} style={{backgroundColor: color.value}}
-                        onClick={()=>{selectItemOption('color', color.value)}}>
+                        <button key={color.id} title={color.displayValue} className={`w-7 h-7 rounded-[1px] ${selectedItem.attributes?.Color == color.value? 'border-4 border-white shadow-[0_0_0_3px_#5ECE7B] scale-85' : ' border border-secondaryText '}`} style={{backgroundColor: color.value}}
+                        onClick={()=>{selectItemOption('Color', color.value)}}>
 
                         </button>))}
                 </div>
@@ -148,7 +167,7 @@ function ProductDetails() {
                 <p className='w-full text-left text-xl font-semibold' >{productData.prices[0].currency.symbol+productData.prices[0].amount}</p>
             </div>
             {productData.inStock ? 
-                (<button className={`uppercase w-full h-16 text-white bg-primary text-center font-semibold text-xl rounded my-5 ${selectedItem.id? 'opacity-100 cursor-default' : 'opacity-75 cursor-not-allowed'}`} onClick={addCartItem} disabled={!selectedItem.id}>add to cart</button>)
+                (<button className={`uppercase w-full h-16 text-white bg-primary text-center font-semibold text-xl rounded my-5 ${selectedItem.id? 'opacity-100 cursor-default' : 'opacity-75 cursor-not-allowed'}`} onClick={ ()=>{addCartItem(selectedItem, redirectToCart)} } disabled={!selectedItem.id}>add to cart</button>)
                     : 
                 (<span  className='uppercase w-full h-16 text-white bg-mutedRed text-center font-semibold text-xl rounded my-5 flex justify-center items-center cursor-not-allowed ' >Out of stock</span>)
                 }

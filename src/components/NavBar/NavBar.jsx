@@ -10,9 +10,11 @@ function NavBar({showMenu, showCart}) {
     <nav className='flex lg:hidden justify-between items-center w-full h-14 text-primaryText font-raleway fixed px-10 shadow-[0_6px_10px_4px_rgba(0,0,0,0.05)] bg-white z-50'>
       <CiMenuBurger className='w-6 h-6' onClick={showMenu}/>
       <div>
-        <img src={logo} alt="ScandiMarket Logo"  width={40} height={40} />
+        <NavLink to={'/'}>
+          <img src={logo} alt="ScandiMarket Logo"  width={40} height={40} />
+        </NavLink>
       </div>
-      <button  onClick={showCart} data-testid='cart-btn' className="bg-black">
+      <button  onClick={showCart} data-testid='cart-btn' className="">
         <CiShoppingCart className='w-6 h-6 text-primaryText'/>
       </button>
     </nav>

@@ -10,7 +10,7 @@ function Layout({children}) {
   return (
     <div className='font-raleway relative flex flex-col'>
     <Menu show={menu} toggleShow={showMenu} />
-    <CartMenu cart={cart}showCart={showCart} />
+    <CartMenu cart={cart} showCart={showCart} />
     <NavBar showMenu={showMenu} showCart={showCart} />
     <main className='pt-20 pb-6 '>
         {children}

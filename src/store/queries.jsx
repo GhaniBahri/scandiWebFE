@@ -97,3 +97,20 @@ export const GET_CATEGORIES = gql`
     }
   }
 `;
+
+export const CREATE_ORDER = gql`
+mutation CreateOrder($input: OrderInput!) {
+    createOrder(input: $input) {
+      id
+      total
+      currency
+      createdAt
+      items {
+        productId
+        quantity
+        price
+        attributes
+      }
+    }
+  }
+`;

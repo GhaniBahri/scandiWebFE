@@ -7,16 +7,30 @@ export function AppWrapper ({children}) {
     const [menu, setMenu] = useState(false)
     const [cart, setCart] = useState(false)
     const [selectedItem, setSelectedItem] = useState({})
-    const [cartItems, setCartItems] = useState([])
-    const { AllProducts, ProductsByCategory, ProductById } = useStoreData()
+    const [cartItems, setCartItems] = useState({ items: [], currency:'USD', total: 0 })
+    const { AllProducts, ProductsByCategory, ProductById,  } = useStoreData()
 
     function showMenu(){
         setMenu (!menu)
-      }
-      function showCart(){
+    }
+    function showCart(){
         setCart(!cart)
-      }
-      
+    }
+    function selectCartItem(item){
+        setSelectedItem(item)
+    }
+    function addCartItem(item, next) {
+        let total = cartItems.total
+        const subTotal = item.price * item.quantity
+        total += subTotal
+        const attributes = []
+        for (let attribute in item.attributes){
+            const attr = `${attribute.toLowerCase()}:${item.attributes[attribute]}`
+            attributes.push(attr)
+        }
+        setCartItems({...cartItems, total: total, items: attributes})
+        next()
+    }
 
     return (
         <AppContext.Provider
@@ -26,8 +40,8 @@ export function AppWrapper ({children}) {
                 AllProducts,
                 ProductsByCategory,
                 ProductById,
-                selectedItem, setSelectedItem,
-                cartItems, setCartItems
+                selectedItem, selectCartItem,
+                cartItems, addCartItem
             }}
         >
             {children}
