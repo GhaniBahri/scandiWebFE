@@ -4,15 +4,15 @@ import { useAppcontext } from '../store/state'
 import { CiSquareChevRight, CiSquareChevLeft } from "react-icons/ci"
 import ErrorPage from '../components/ErrorPage'
 import parse from 'html-react-parser'
-import { useNavigate } from 'react-router'
+// import { useNavigate } from 'react-router'
 
 function ProductDetails() {
     const {product} = useParams()
-    const {ProductById, addCartItem} = useAppcontext()
+    const {ProductById, setOpenProduct, addCartItem, showCart} = useAppcontext()
     const [picId, setPicId] = useState(0)
     const {loading, data, error} = ProductById(product)
     const [selectedItem, setSelectedItem] = useState({})
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
     
     useEffect(()=>{
         if(!loading && data?.product){
@@ -20,10 +20,11 @@ function ProductDetails() {
             const defaultAttributes ={}
              prod.attributes.forEach(attr =>  defaultAttributes[attr.id] = attr.options[0].value )
             setSelectedItem({
-                id: prod.id,
+                // id: prod.id,
                 quantity: 1,
                 price: prod.prices[0].amount,
-                attributes: defaultAttributes
+                attributes: [],// defaultAttributes
+                options: {}
             })
         }
     }, [loading, data])
@@ -47,7 +48,7 @@ function ProductDetails() {
                 </div>
                 <span className='w-1/5 h-2 bg-lightGray rounded-full'></span>
                 <span className='w-2/5 h-2 bg-lightGray rounded-full'></span>
-                <span className='w-3/5 h-14 bg-lightGray rounded-lg mx-auto mt-auto mb-8'></span>
+                <span className='w-full h-14 bg-lightGray rounded-lg mx-auto mt-auto mb-8'></span>
                 <span className='w-4/5 h-2 bg-lightGray rounded-full'></span>
                 <span className='w-3/5 h-2 bg-lightGray rounded-full'></span>
             </div>
@@ -59,6 +60,7 @@ function ProductDetails() {
 
     const productData = data?.product
     if (!productData) return <ErrorPage/>
+    setOpenProduct(productData)
     const imagesArray = productData?.gallery 
     const attributes = {}
     productData?.attributes.forEach(attr => (attributes[attr.id] = attr))
@@ -66,6 +68,7 @@ function ProductDetails() {
     const otherAttributes = attributeKeys.filter(attr => !['Color', 'Capacity', 'Size'].includes(attr))
     const productDescription = parse(replaceNewLine(productData.description))
     // console.log('product', productData, selectedItem)
+    // console.log('keys', otherAttributes, attributes)
 
     function selectPic (id){
         setPicId(id)
@@ -85,15 +88,21 @@ function ProductDetails() {
         }
     }
     function redirectToCart(){
-        navigate('/cart')
+        // navigate('/cart')
+        showCart()
     }
     function replaceNewLine(str){
         return str.replace(/\\n/g, '<br/>')
     }
     function selectItemOption(opt, value){
-        const attributes = selectedItem.attributes
-        attributes[opt] = value
-        setSelectedItem({...selectedItem, attributes: attributes} )
+        const options = selectedItem.options
+        const attributes = []
+        options[opt] = value
+        for (let attribute in options){
+                const attr = `${attribute.toLowerCase()}:${options[attribute]}`
+                attributes.push(attr)
+            }
+        setSelectedItem({...selectedItem, id: productData.id, options: options, attributes: attributes} )
         console.log('order item', selectedItem)
     }
 
@@ -121,7 +130,7 @@ function ProductDetails() {
                     <h2 className='w-full uppercase text-left text-lg font-semibold'>Size :</h2>
                     <div className="flex flex-row justify-start items-center gap-1">
                         {attributes.Size.options.map(size=>(
-                            <button key={size.id} className={`w-14 h-9 align-middle p-1 text-center text-sm font-bold rounded-xs ${selectedItem.attributes?.Size == size.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
+                            <button key={size.id} className={`w-14 h-9 align-middle p-1 text-center text-sm font-bold rounded-xs ${selectedItem.options?.Size == size.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
                             onClick={()=>{selectItemOption('Size', size.value)}}>
                                 {size.value}
                             </button>))}
@@ -133,7 +142,7 @@ function ProductDetails() {
                     <h2 className='w-full uppercase text-left text-lg font-semibold'>Capacity :</h2>
                     <div className="flex flex-row justify-start items-center gap-1">
                         {attributes.Capacity.options.map(capacity => (
-                            <button key={capacity.id} className={`w-14 h-9 align-middle p-1 text-primaryText text-center rounded-xs ${selectedItem.attributes?.Capacity == capacity.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
+                            <button key={capacity.id} className={`w-14 h-9 align-middle p-1 text-primaryText text-center rounded-xs ${selectedItem.options?.Capacity == capacity.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
                             onClick={()=>{selectItemOption('Capacity', capacity.value)}}>
                                 {capacity.displayValue}
                             </button>))}
@@ -145,7 +154,7 @@ function ProductDetails() {
                 <h2 className='w-full uppercase text-left text-lg font-semibold'>Color :</h2>
                 <div className="flex flex-row justify-start items-center gap-1">
                     {attributes.Color.options.map(color => (
-                        <button key={color.id} title={color.displayValue} className={`w-7 h-7 rounded-[1px] ${selectedItem.attributes?.Color == color.value? 'border-4 border-white shadow-[0_0_0_3px_#5ECE7B] scale-85' : ' border border-secondaryText '}`} style={{backgroundColor: color.value}}
+                        <button key={color.id} title={color.displayValue} className={`w-7 h-7 rounded-[1px] ${selectedItem.options?.Color == color.value? 'border-4 border-white shadow-[0_0_0_3px_#5ECE7B] scale-85' : ' border border-secondaryText '}`} style={{backgroundColor: color.value}}
                         onClick={()=>{selectItemOption('Color', color.value)}}>
 
                         </button>))}
@@ -156,7 +165,7 @@ function ProductDetails() {
                     <div className='w-full flex flex-col gap-2' key={attr}>
                         <h2 className='w-full uppercase text-left text-lg font-semibold'>{attributes[attr].name} :</h2>
                         <div className="flex flex-row justify-start items-center gap-1">
-                            {attributes[attr].options.map(item => (<button key={item.id}  className='w-14 h-9 align-middle border-2 border-secondaryText p-1 text-primaryText text-center '
+                            {attributes[attr].options.map(item => (<button key={item.id}  className={`w-14 h-9 align-middle p-1 text-primaryText text-center rounded-xs ${selectedItem.options?.[attr] == item.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
                                 onClick={()=>{selectItemOption(attr, item.value)}}>{item.displayValue}</button>))}
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useParams } from "react-router";
-import Card from '../components/Card'
+import Card from '../components/Cards/Card'
 import { useAppcontext } from '../store/state'
 import ErrorPage from '../components/ErrorPage';
 

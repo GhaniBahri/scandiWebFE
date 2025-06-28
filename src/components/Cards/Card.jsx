@@ -1,18 +1,18 @@
 import React from 'react'
 import { CiShoppingCart } from "react-icons/ci";
 import { useNavigate } from 'react-router';
-import toKebab from '../helpers/toKebab';
+import toKebab from '../../helpers/toKebab';
 
 function Card({product}) {
   const navigate = useNavigate()
   const kebabName = toKebab(product.name)
-  console.log(kebabName)
+  // console.log(kebabName)
   function redirctPdp(){
     navigate(`/products/${product.id}`)
   }
   function addCartItem(event){
     event.stopPropagation()
-    console.log('item Added')
+    // console.log('item Added')
   }
   return (
     <>

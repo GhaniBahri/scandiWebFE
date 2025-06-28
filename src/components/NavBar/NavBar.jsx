@@ -1,10 +1,17 @@
 import { CiMenuBurger, CiShoppingCart } from "react-icons/ci";
 import { NavLink, useParams } from "react-router";
+import { useAppcontext } from '../../store/state'
 import logo from "@/assets/images/logo.svg";
 
 function NavBar({showMenu, showCart}) {
+  const {cartItems} = useAppcontext()
+  // console.log('cartITems', cartItems)
   const categories = [{name: "all"}, {name: "clothes"}, {name: "tech"}];
   const {cat} = useParams()
+  function switchCart(e){
+    console.log('navbar',e)
+    showCart()
+  }
   return (
   <>
     <nav className='flex lg:hidden justify-between items-center w-full h-14 text-primaryText font-raleway fixed px-10 shadow-[0_6px_10px_4px_rgba(0,0,0,0.05)] bg-white z-50'>
@@ -33,7 +40,8 @@ function NavBar({showMenu, showCart}) {
         </NavLink>
       </div>
       <div className='w-1/3 flex justify-end items-center py-5'>
-      <button onClick={showCart} data-testid='cart-btn' >
+      <button onClick={switchCart} data-testid='cart-btn' className="relative" >
+        <span className="absolute -top-3 -right-3 w-7 h-7 rounded-full flex justify-center items-center bg-black text-white text-base font-bold">{cartItems.items.length}</span>
         <CiShoppingCart className='w-8 h-8 text-primaryText'/>
       </button>
       </div>
