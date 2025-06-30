@@ -77,6 +77,16 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
       category{
         name
       }
+      attributes {
+        id
+        name
+        type
+        options {
+          id
+          displayValue
+          value
+        }
+      }
       prices{
         amount
         formatted
@@ -101,10 +111,8 @@ export const GET_CATEGORIES = gql`
 export const CREATE_ORDER = gql`
 mutation CreateOrder($input: OrderInput!) {
     createOrder(input: $input) {
-      id
       total
       currency
-      createdAt
       items {
         productId
         quantity

@@ -2,17 +2,30 @@ import React from 'react'
 import { CiShoppingCart } from "react-icons/ci";
 import { useNavigate } from 'react-router';
 import toKebab from '../../helpers/toKebab';
+import { useAppcontext } from '../../store/state'
 
 function Card({product}) {
   const navigate = useNavigate()
+  const { addCartItem} = useAppcontext()
   const kebabName = toKebab(product.name)
-  // console.log(kebabName)
+  console.log(product)
   function redirctPdp(){
     navigate(`/products/${product.id}`)
   }
-  function addCartItem(event){
+  function addItem(event){
     event.stopPropagation()
-    // console.log('item Added')
+    const stringsArray = product.attributes.map(attr => {
+      const option = attr.options[0].value
+      return `${attr.name.toLowerCase()}:${option}`
+    })
+    const item = {
+      id : product.id,
+      price : product.prices[0].amount,
+      quantity : 1,
+      attributes:stringsArray
+    }
+    
+    addCartItem(item, ()=>{console.log('item Added', item.productId)})
   }
   return (
     <>
@@ -23,7 +36,7 @@ function Card({product}) {
           <img src={product.gallery[0]} alt={product.name} className={`w-fit h-fit group-hover:scale-120 transition-transform ease-out duration-150 ${product.inStock? 'opacity-100' : ' opacity-35'}`} />
           <span className={`absolute w-full text-center text-normal font-semibold text-secondaryText bg-white py-2 top-1/2 -translate-y-1/2 ${product.inStock? 'opacity-0': 'opacity-100'}`}>Out of stock</span>
         </div>
-        <button onClick={addCartItem} className={` text-white rounded-full p-2 bg-primary absolute right-4 bottom-20 transition-opacity ease-out duration-150 opacity-0 ${product.inStock? 'group-hover:opacity-100': ''}`}>
+        <button onClick={addItem} className={` text-white rounded-full p-2 bg-primary absolute right-4 bottom-20 transition-opacity ease-out duration-150 opacity-0 ${product.inStock? 'group-hover:opacity-100': ''}`}>
           <CiShoppingCart className={`w-6 h-6`}/>
         </button>
         <p className='w-full font-light text-lg mt-4'>{product.name}</p>

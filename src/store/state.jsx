@@ -10,7 +10,7 @@ export function AppWrapper ({children}) {
     const [openProduct, setOpenProduct] = useState({})
     const [cartItems, setCartItems] = useState({ items: [], currency:'USD', total: 0 })
     const [allProducts, setAllProducts] = useState([])
-    const { AllProducts, ProductsByCategory, ProductById,  } = useStoreData()
+    const { AllProducts, ProductsByCategory, ProductById, NewOrder, orderData, orderLoading, orderError} = useStoreData()
     const {loading, data, error} = AllProducts()
     useEffect(()=>{
         if(!loading && !error && data){
@@ -96,6 +96,18 @@ export function AppWrapper ({children}) {
         console.log('after', cartItems)
     }
 
+    function placeOrder(input){
+        NewOrder(input)
+        while (orderLoading) console.log('loading order')
+        if (orderError){
+            console.log('error placing order', error)
+            return
+        }
+        console.log('order data', orderData)
+        return orderData
+
+    }
+
     return (
         <AppContext.Provider
             value={{
@@ -106,7 +118,7 @@ export function AppWrapper ({children}) {
                 ProductById,
                 openProduct, setOpenProduct,
                 cartItems, addCartItem, removeCartItem, updateCartItem,
-                allProducts
+                allProducts, placeOrder
             }}
         >
             {children}

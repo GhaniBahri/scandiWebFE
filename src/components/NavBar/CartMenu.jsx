@@ -5,15 +5,17 @@ import CartCard from '../Cards/CartCard'
 function CartMenu({cart, showCart}) {
   const [mounted, setMounted] = useState(false)
   const menuRef = useRef(null)
-  const {cartItems, allProducts} = useAppcontext()
+  const {cartItems, allProducts, placeOrder} = useAppcontext()
 
   // const itemsIds = cartItems.items.map(item => item.productId)
   const allItems = cartItems.items
   // const itemsData = allProducts.filter(item => itemsIds.includes(item.id))
   const cardsItems = []
+  console.log('cart', cartItems)
 
   allItems.forEach(product => {
     const matchingProduct = allProducts.filter(prod => prod.id == product.productId )[0]
+    console.log('name of ', matchingProduct)
     const cardItem = {
       productId: product.productId,
       name: matchingProduct.name,
@@ -27,7 +29,7 @@ function CartMenu({cart, showCart}) {
   })
 
   // console.info('itemsIds')
-  console.log(cartItems)
+  console.log('items to order', cartItems)
   // // console.info('allproducts')
   // // console.table(allProducts)
   // console.info('itemsdata')
@@ -56,6 +58,10 @@ function CartMenu({cart, showCart}) {
     console.log('cartMenu')
     showCart()
   }
+  function orderItems(){
+    const orders = placeOrder(cartItems)
+    console.log(orders)
+  }
 
   if (!cart) return null;
   return (
@@ -73,9 +79,9 @@ function CartMenu({cart, showCart}) {
       </div>
       <div className='top-0 right-0 left-0 bottom-0 fixed hidden lg:block z-40' ref={menuRef}>
         <div className='-z-50 fixed top-0 right-0 left-0 bottom-0 bg-[rgba(0,0,0,0.4)]' onClick={switchCart}></div>
-        <aside className={`z-10 absolute top-20 right-8 bg-white w-96 flex flex-col justify-start items-center p-4 transition-all duration-500 ease-in-out ${mounted ? 'h-[32rem]' : 'h-0'}`}>
-          <p className='font-medium text-xl px-1 py-3 mb-4 w-full text-left'><span className='font-bold'>My Bag:</span>{' ' + cardsItems.length +' '+ (cardsItems.length > 1 ? 'items' : 'item')}</p>
-          <div className='flex flex-col justify-start items-center '>
+        <aside className={`z-10 absolute top-20 right-8 bg-white w-96 flex flex-col justify-start items-center p-4 pt-0 transition-all duration-500 ease-in-out ${mounted ? 'h-[38rem]' : 'h-0'}`}>
+          <p className='font-medium max-h-2/12 text-xl px-1 py-3 mb-4 w-full text-left'><span className='font-bold'>My Bag:</span>{' ' + cardsItems.length +' '+ (cardsItems.length > 1 ? 'items' : 'item')}</p>
+          <div className='flex flex-col justify-start items-center max-h-8/12 overflow-y-auto'>
             {
               cardsItems.map(item => {
                 return (
@@ -84,10 +90,12 @@ function CartMenu({cart, showCart}) {
               })
             }
           </div>
-          <p className='text-xl px-1 py-3 font-bold w-full flex flex-row justify-between items-center mt-auto'>
+          <p className='text-xl px-1 py-3 font-bold w-full flex flex-row justify-between items-center mt-auto mb-2 max-h-2/12'>
             <span >My Bag:</span>
             <span>${cartItems.total}</span>
           </p>
+          <button className='uppercase text-xl font-medium text-center bg-primary text-white w-11/12 mx-auto h-14 py-1 px-4 rounded-sm'
+          onClick={orderItems}>place Orders</button>
         </aside>    
       </div>
     </>

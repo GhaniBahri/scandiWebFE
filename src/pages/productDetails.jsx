@@ -67,7 +67,7 @@ function ProductDetails() {
     const attributeKeys = productData.attributes.map(attr => attr.id) 
     const otherAttributes = attributeKeys.filter(attr => !['Color', 'Capacity', 'Size'].includes(attr))
     const productDescription = parse(replaceNewLine(productData.description))
-    // console.log('product', productData, selectedItem)
+    console.log('product', productData)
     // console.log('keys', otherAttributes, attributes)
 
     function selectPic (id){
