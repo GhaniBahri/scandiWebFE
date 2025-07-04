@@ -5,9 +5,9 @@ import { AppWrapper } from './store/state.jsx'
 import './index.css'
 import App from './App.jsx'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
-import Category from './pages/plp.jsx'
-import ProductDetails from './pages/pdp.jsx'
-import ErrorPage from './components/ErrorPage.jsx';
+import Category from './pages/ProductListing.jsx'
+import ProductDetails from './pages/ProductDetails.jsx'
+import ErrorPage from './components/ErrorPage.jsx'
 
 const client = new ApolloClient({
   uri: 'https://scandi-market.x10.mx/graphql',
