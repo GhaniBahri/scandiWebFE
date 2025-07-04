@@ -19,7 +19,7 @@ function NavBar({showMenu, showCart}) {
           <img src={logo} alt="ScandiMarket Logo"  width={40} height={40} />
         </NavLink>
       </div>
-      <button  onClick={showCart} data-testid='cart-btn' className="relative CartMenuBtn">
+      <button  onClick={showCart} className="relative CartMenuBtn">
         <span className={`absolute -top-3 -right-3 w-7 h-7 rounded-full flex justify-center items-center bg-black text-white text-base font-bold ${cartItems.items.length > 0 ? 'opacity-100' : 'opacity-0'}`}>{cartItems.items.length}</span>
         <CiShoppingCart className='w-6 h-6 text-primaryText'/>
       </button>
