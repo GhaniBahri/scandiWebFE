@@ -8,7 +8,6 @@ function Card({product}) {
   const navigate = useNavigate()
   const { addCartItem} = useAppcontext()
   const kebabName = toKebab(product.name)
-  console.log(product)
   function redirctPdp(){
     navigate(`/products/${product.id}`)
   }
@@ -29,7 +28,7 @@ function Card({product}) {
   }
   return (
     <>
-      <article className={`flex flex-col relative text-primaryText items-center justify-start w-72 h-96 rounded-md p-1 px-3 bg-white text-left font-raleway text-lg border border-gray-200
+      <article className={`flex flex-col relative text-primaryText items-center justify-start w-72 h-96 col-auto rounded-md p-1 px-3 bg-white text-left font-raleway text-lg border border-gray-200
       hover:scale-105 hover:shadow-[0_0_8px_2px_rgba(0,0,0,0.2)] overflow-hidden transition-all duration-150 ease-in-out group`}
       onClick={redirctPdp} data-testid={`product-${kebabName}`}>
         <div className='w-full h-3/4 rounded-xs overflow-hidden relative'>

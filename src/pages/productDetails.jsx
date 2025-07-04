@@ -4,6 +4,7 @@ import { useAppcontext } from '../store/state'
 import { CiSquareChevRight, CiSquareChevLeft } from "react-icons/ci"
 import ErrorPage from '../components/ErrorPage'
 import parse from 'html-react-parser'
+import toKebab from '../helpers/toKebab'
 // import { useNavigate } from 'react-router'
 
 function ProductDetails() {
@@ -11,7 +12,7 @@ function ProductDetails() {
     const {ProductById, setOpenProduct, addCartItem, showCart} = useAppcontext()
     const [picId, setPicId] = useState(0)
     const {loading, data, error} = ProductById(product)
-    const [selectedItem, setSelectedItem] = useState({})
+    const [selectedItem, setSelectedItem] = useState({id: "", options: {}, attributes: []})
     // const navigate = useNavigate()
     
     useEffect(()=>{
@@ -20,7 +21,7 @@ function ProductDetails() {
             const defaultAttributes ={}
              prod.attributes.forEach(attr =>  defaultAttributes[attr.id] = attr.options[0].value )
             setSelectedItem({
-                // id: prod.id,
+                id: prod.id,
                 quantity: 1,
                 price: prod.prices[0].amount,
                 attributes: [],// defaultAttributes
@@ -67,8 +68,6 @@ function ProductDetails() {
     const attributeKeys = productData.attributes.map(attr => attr.id) 
     const otherAttributes = attributeKeys.filter(attr => !['Color', 'Capacity', 'Size'].includes(attr))
     const productDescription = parse(replaceNewLine(productData.description))
-    console.log('product', productData)
-    // console.log('keys', otherAttributes, attributes)
 
     function selectPic (id){
         setPicId(id)
@@ -102,14 +101,14 @@ function ProductDetails() {
                 const attr = `${attribute.toLowerCase()}:${options[attribute]}`
                 attributes.push(attr)
             }
-        setSelectedItem({...selectedItem, id: productData.id, options: options, attributes: attributes} )
-        console.log('order item', selectedItem)
+        setSelectedItem({...selectedItem, options: options, attributes: attributes} )
     }
 
   return (
     <section className='w-full h-fit flex flex-col lg:flex-row px-20 py-10 font-raleway'>
         <div className='w-full lg:max-h-[34rem] h-fit min-h-52 lg:w-3/5 p-8 flex flex-col-reverse justify-center items-center lg:justify-start  lg:flex-row gap-2'>
-            {(imagesArray.length > 1) && (<ul className='gap-4 w-full lg:w-1/5 max-h-[32rem] flex flex-row justify-center items-center lg:flex-col px-3 overflow-x-auto lg:overflow-y-auto'>
+            {(imagesArray.length > 1) && (<ul className='gap-4 w-full lg:w-1/5 max-h-[32rem] flex flex-row justify-center items-center lg:flex-col px-3 overflow-x-auto lg:overflow-y-auto'
+            data-testid='product-gallery'>
                 {imagesArray.map((pic, id) => (<img src={pic} key={id} width={60} height={60} className={`aspect-square min-w-14 min-h-14 max-w-20 max-h-20 lg:w-4/5 rounded-xs object-fill ${picId == id ? 'scale-90 border-4 p-1 border-primary inset-shadow-[0_0_8px_4px_rgba(255,255,255,0.5)]' :''}`} onClick={()=>selectPic(id)} />)) }
             </ul>)}
             <div className='w-4/5 max-w-xl p-2 group relative mx-auto'>
@@ -128,7 +127,7 @@ function ProductDetails() {
             {attributeKeys.includes('Size') && (
                 <div className='w-full flex flex-col gap-2'>
                     <h2 className='w-full uppercase text-left text-lg font-semibold'>Size :</h2>
-                    <div className="flex flex-row justify-start items-center gap-1">
+                    <div className="flex flex-row justify-start items-center gap-1" data-testid='product-attribute-size'>
                         {attributes.Size.options.map(size=>(
                             <button key={size.id} className={`w-14 h-9 align-middle p-1 text-center text-sm font-bold rounded-xs ${selectedItem.options?.Size == size.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
                             onClick={()=>{selectItemOption('Size', size.value)}}>
@@ -140,7 +139,7 @@ function ProductDetails() {
             {attributeKeys.includes('Capacity')? (
                 <div className='w-full flex flex-col gap-2'>
                     <h2 className='w-full uppercase text-left text-lg font-semibold'>Capacity :</h2>
-                    <div className="flex flex-row justify-start items-center gap-1">
+                    <div className="flex flex-row justify-start items-center gap-1" data-testid='product-attribute-capacity'>
                         {attributes.Capacity.options.map(capacity => (
                             <button key={capacity.id} className={`w-14 h-9 align-middle p-1 text-primaryText text-center rounded-xs ${selectedItem.options?.Capacity == capacity.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
                             onClick={()=>{selectItemOption('Capacity', capacity.value)}}>
@@ -152,7 +151,7 @@ function ProductDetails() {
             {attributeKeys.includes('Color')? (
                 <div className='w-full flex flex-col gap-2'>
                 <h2 className='w-full uppercase text-left text-lg font-semibold'>Color :</h2>
-                <div className="flex flex-row justify-start items-center gap-1">
+                <div className="flex flex-row justify-start items-center gap-1" data-testid='product-attribute-color'>
                     {attributes.Color.options.map(color => (
                         <button key={color.id} title={color.displayValue} className={`w-7 h-7 rounded-[1px] ${selectedItem.options?.Color == color.value? 'border-4 border-white shadow-[0_0_0_3px_#5ECE7B] scale-85' : ' border border-secondaryText '}`} style={{backgroundColor: color.value}}
                         onClick={()=>{selectItemOption('Color', color.value)}}>
@@ -164,7 +163,7 @@ function ProductDetails() {
                 otherAttributes.map(attr => (
                     <div className='w-full flex flex-col gap-2' key={attr}>
                         <h2 className='w-full uppercase text-left text-lg font-semibold'>{attributes[attr].name} :</h2>
-                        <div className="flex flex-row justify-start items-center gap-1">
+                        <div className="flex flex-row justify-start items-center gap-1" data-testid={`product-${toKebab(attr)}`}>
                             {attributes[attr].options.map(item => (<button key={item.id}  className={`w-14 h-9 align-middle p-1 text-primaryText text-center rounded-xs ${selectedItem.options?.[attr] == item.value ? 'bg-primaryText text-white' : 'bg-white text-primaryText border-2 border-secondaryText'}`}
                                 onClick={()=>{selectItemOption(attr, item.value)}}>{item.displayValue}</button>))}
                         </div>
@@ -176,11 +175,12 @@ function ProductDetails() {
                 <p className='w-full text-left text-xl font-semibold' >{productData.prices[0].currency.symbol+productData.prices[0].amount}</p>
             </div>
             {productData.inStock ? 
-                (<button className={`uppercase w-full h-16 text-white bg-primary text-center font-semibold text-xl rounded my-5 ${selectedItem.id? 'opacity-100 cursor-default' : 'opacity-75 cursor-not-allowed'}`} onClick={ ()=>{addCartItem(selectedItem, redirectToCart)} } disabled={!selectedItem.id}>add to cart</button>)
+                (<button className={`uppercase w-full h-16 text-white bg-primary text-center font-semibold text-xl rounded my-5 ${(selectedItem?.attributes?.length === attributeKeys?.length)? 'opacity-100 cursor-default' : 'opacity-75 cursor-not-allowed'}`} onClick={ ()=>{addCartItem(selectedItem, redirectToCart)} } disabled={selectedItem?.attributes?.length !== attributeKeys?.length}
+                data-testid='add-to-cart'>add to cart</button>)
                     : 
-                (<span  className='uppercase w-full h-16 text-white bg-mutedRed text-center font-semibold text-xl rounded my-5 flex justify-center items-center cursor-not-allowed ' >Out of stock</span>)
+                (<span  className='uppercase w-full h-16 text-white bg-mutedRed text-center font-semibold text-xl rounded my-5 flex justify-center items-center cursor-not-allowed ' data-testid='add-to-cart'>Out of stock</span>)
                 }
-            <div className='w-full font-normal text-lg text-left leading-7' >{productDescription}</div>
+            <div className='w-full font-normal text-lg text-left leading-7' data-testid='product-description'>{productDescription}</div>
         </div>
     </section>
   )

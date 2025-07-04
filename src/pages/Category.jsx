@@ -24,10 +24,10 @@ function Category() {
   if (error) return <ErrorPage error={error} />;
 
   const ProductsList = data?.products || []
-  if (!ProductsList) return <ErrorPage />
+  if (ProductsList.length == 0) return <ErrorPage />
   return (
     <main className='w-full h-fit'>
-      <div className='w-full h-full px-20 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-x-6 gap-y-10'>
+      <div className='w-full px-4 md:px-8 lg:p-14 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  justify-items-center gap-[1rem] gap-y-12 '>
         {ProductsList.map(product => <Card product={product} key={product.id} />)}
       </div>
     </main>

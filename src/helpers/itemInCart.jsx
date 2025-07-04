@@ -1,5 +1,4 @@
 export default function itemInCart(obj, item){
-    // console.log('obj', obj)
     const newItemAttributes = [...item.attributes].sort()
     const existingItem = obj.findIndex(objectItem => {
         if (objectItem.productId !== item.id) return false

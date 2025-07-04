@@ -34,7 +34,6 @@ export function AppWrapper ({children}) {
     function addCartItem(item, next) {
         const items = cartItems.items
         const itemExists = itemInCart(items, item)
-        console.log('item', item)
         let total = cartItems.total
         let newItemsList = [...items]
         const subTotal = parseFloat((item.price * item.quantity).toFixed(2))
@@ -65,46 +64,40 @@ export function AppWrapper ({children}) {
         const itemExists = itemInCart(items, item)
         let total = cartItems.total;
         let newItemsList = [...items];
-        console.log('exists????', itemExists)
         if (itemExists === false){
             next() 
             return
         }
-        console.log('it does')
         const exisitingItem = items[itemExists]
-        console.log('existing', exisitingItem)
         const subTotal = exisitingItem.price * exisitingItem.quantity
 
         total -= subTotal
         newItemsList.splice(itemExists, 1)
-        console.log('the new list', newItemsList)
         setCartItems({...cartItems, total: total, items: newItemsList})
         next()
 
     }
     function updateCartItem(existingItem, newAttributes){
-        console.log('before', cartItems.items, '\n', existingItem)
         const items = cartItems.items
         const itemExists = itemInCart(items, existingItem)
         if (itemExists === false) return
-        console.log('passed false')
         const oldItem = items[itemExists]
         const updatedItem = {...oldItem , attributes: [...newAttributes]}
         const newItemsList = [...items]
         newItemsList[itemExists] = updatedItem
         setCartItems({...cartItems, items : newItemsList})
-        console.log('after', cartItems)
     }
 
-    function placeOrder(input){
-        NewOrder(input)
-        while (orderLoading) console.log('loading order')
-        if (orderError){
-            console.log('error placing order', error)
-            return
+    async function placeOrder(input){
+        try {
+            const {data} = await NewOrder(input)
+            setCartItems({ items: [], currency:'USD', total: 0 })
+            // return orderData
+            return data
+        } catch (err){
+            console.error('Error placing order:', err)
+            throw err
         }
-        console.log('order data', orderData)
-        return orderData
 
     }
 
@@ -118,7 +111,7 @@ export function AppWrapper ({children}) {
                 ProductById,
                 openProduct, setOpenProduct,
                 cartItems, addCartItem, removeCartItem, updateCartItem,
-                allProducts, placeOrder
+                allProducts, placeOrder, orderLoading, orderError, orderData
             }}
         >
             {children}

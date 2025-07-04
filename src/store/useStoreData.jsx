@@ -9,7 +9,7 @@ export const useStoreData = () => {
   // const Categories = () => useQuery(GET_CATEGORIES);
   const ProductsByCategory = (category) => useQuery(GET_PRODUCTS_BY_CATEGORY, { variables: {category}});
   const ProductById = (id) => useQuery(GET_PRODUCT_BY_ID, {variables: {id}})
-  const NewOrder = (input) => { return createOrderMutation({ variables: { input } })}
+  const NewOrder = async (input) => { return createOrderMutation({ variables: { input } })}
   
   return { 
     AllProducts, 
