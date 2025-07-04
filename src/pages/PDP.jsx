@@ -7,7 +7,7 @@ import parse from 'html-react-parser'
 import toKebab from '../helpers/toKebab'
 // import { useNavigate } from 'react-router'
 
-function PDP() {
+function ProductDetails() {
     const {product} = useParams()
     const {ProductById, setOpenProduct, addCartItem, showCart} = useAppcontext()
     const [picId, setPicId] = useState(0)
@@ -186,4 +186,4 @@ function PDP() {
   )
 }
 
-export default PDP
+export default ProductDetails
