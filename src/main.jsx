@@ -5,8 +5,8 @@ import { AppWrapper } from './store/state.jsx'
 import './index.css'
 import App from './App.jsx'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
-import Category from './pages/Category.jsx'
-import PDP from './pages/PDP.jsx'
+import Category from './pages/plp.jsx'
+import PDP from './pages/pdp.jsx'
 import ErrorPage from './components/ErrorPage.jsx';
 
 const client = new ApolloClient({
