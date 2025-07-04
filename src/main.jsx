@@ -10,7 +10,7 @@ import ProductDetails from './pages/productDetails.jsx'
 import ErrorPage from './components/ErrorPage.jsx';
 
 const client = new ApolloClient({
-  uri: 'https://gh.great-site.net/graphql',
+  uri: 'https://scandi-market.x10.mx/graphql',
   cache: new InMemoryCache(),
 });
 
