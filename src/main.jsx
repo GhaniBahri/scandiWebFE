@@ -15,7 +15,7 @@ const client = new ApolloClient({
 });
 
 createRoot(document.getElementById('root')).render(
-  <HashRouter>
+  <BrowserRouter>
     <ApolloProvider client={client}>
       <AppWrapper>
         <StrictMode>
@@ -30,5 +30,5 @@ createRoot(document.getElementById('root')).render(
         </StrictMode>
       </AppWrapper>
     </ApolloProvider>
-  </HashRouter>,
+  </BrowserRouter>,
 )
