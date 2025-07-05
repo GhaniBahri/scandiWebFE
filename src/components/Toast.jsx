@@ -2,15 +2,9 @@ import React, { useEffect} from 'react'
 import { useAppcontext } from '../store/state'
 
 function Toast({ duration = 5000 }) {
-    // const [mounted, setMounted] = useState(false)
     const {showToast, setShowToast, toastMessage, toastColor} = useAppcontext()
-    console.log('toast', showToast)
-    
-    // useEffect(()=>{setMounted(showToast)}, [showToast])
     useEffect(() => {
-        console.log('effect')
         if (!showToast) return;
-        console.log('return')
         const timer = setTimeout(() => setShowToast(false), duration);
         return () => clearTimeout(timer);
     }, [showToast, setShowToast, duration]);
