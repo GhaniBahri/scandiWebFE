@@ -18,13 +18,4 @@ export default defineConfig({
       '@': path.resolve( __dirname,  './src')
     }
   },
-    server: {
-    proxy: {
-      '/graphql': {
-        target: 'http://www.gh.great-site.net',
-        changeOrigin: true,
-        secure: false,
-      }
-    }
-  }
 })

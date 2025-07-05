@@ -10,8 +10,11 @@ export function AppWrapper ({children}) {
     const [openProduct, setOpenProduct] = useState({})
     const [cartItems, setCartItems] = useState({ items: [], currency:'USD', total: 0 })
     const [allProducts, setAllProducts] = useState([])
+    const [showToast, setShowToast] = useState(false)
     const { AllProducts, ProductsByCategory, ProductById, NewOrder, orderData, orderLoading, orderError} = useStoreData()
     const {loading, data, error} = AllProducts()
+    const [toastMessage, setToastMessage] = useState("");
+const [toastColor, setToastColor] = useState({ bg: "#5ECE7B", text: "#fff" });
     useEffect(()=>{
         if(!loading && !error && data){
             setAllProducts(data.products)
@@ -88,11 +91,19 @@ export function AppWrapper ({children}) {
         setCartItems({...cartItems, items : newItemsList})
     }
 
+
+
     async function placeOrder(input){
         try {
             const {data} = await NewOrder(input)
             setCartItems({ items: [], currency:'USD', total: 0 })
-            // return orderData
+            if (data.createOrder){
+                // toastMessage = "Congratulations! Your order will arrive soon."
+                setToastMessage("Congratulations! Your order will arrive soon.");
+      setToastColor({ bg: "#5ECE7B", text: "#fff" });
+                setShowToast(true)
+            }
+            console.log('data', data)
             return data
         } catch (err){
             console.error('Error placing order:', err)
@@ -106,6 +117,7 @@ export function AppWrapper ({children}) {
             value={{
                 menu, showMenu,
                 cart, showCart,
+                showToast, setShowToast, toastMessage, toastColor,
                 AllProducts,
                 ProductsByCategory,
                 ProductById,
