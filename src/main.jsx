@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 import { AppWrapper } from './store/state.jsx'
 import './index.css'
 import App from './App.jsx'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
+import { BrowserRouter, Routes, Route, Navigate, HashRouter } from 'react-router'
 import Category from './pages/ProductListing.jsx'
 import ProductDetails from './pages/ProductDetails.jsx'
 import ErrorPage from './components/ErrorPage.jsx'
@@ -15,7 +15,7 @@ const client = new ApolloClient({
 });
 
 createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
+  <HashRouter>
     <ApolloProvider client={client}>
       <AppWrapper>
         <StrictMode>
@@ -30,5 +30,5 @@ createRoot(document.getElementById('root')).render(
         </StrictMode>
       </AppWrapper>
     </ApolloProvider>
-  </BrowserRouter>,
+  </HashRouter>,
 )
